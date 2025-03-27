@@ -1,7 +1,6 @@
-﻿using FinalExamn.Models; // Asegúrate de tener definido el modelo Tarea y, si es necesario, Usuario.
+﻿using FinalExamn.Data;
+using FinalExamn.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FinalExamn.Services
 {
@@ -14,47 +13,42 @@ namespace FinalExamn.Services
             _context = context;
         }
 
-        // Obtiene todas las tareas, incluyendo la información del usuario relacionado.
+        // Listar todas las tareas
         public async Task<IEnumerable<Tarea>> GetAllAsync()
         {
-            return await _context.tareas
-                .ToListAsync();
+            return await _context.Tareas.ToListAsync();
         }
 
-        // Crea una nueva tarea y la guarda en la base de datos.
+        // Crear una nueva tarea
         public async Task<Tarea> CreateAsync(Tarea tarea)
         {
-            _context.tareas.Add(tarea);
+            _context.Tareas.Add(tarea);
             await _context.SaveChangesAsync();
             return tarea;
         }
 
-        // Actualiza una tarea existente.
-        // Retorna la tarea actualizada o null si no se encontró.
+        // Actualizar una tarea existente
         public async Task<Tarea?> UpdateAsync(Tarea tarea)
         {
-            var tareaExistente = await _context.tareas.FindAsync(tarea.Id);
-            if (tareaExistente == null)
+            var tareaExistente = await _context.Tareas.FindAsync(tarea.Id);
+            if (tareaExistente == null) 
                 return null;
 
-            // Actualiza las propiedades deseadas.
             tareaExistente.Descripcion = tarea.Descripcion;
-            // Agrega aquí la actualización de otras propiedades si es necesario.
-            
-            _context.tareas.Update(tareaExistente);
+
+            _context.Tareas.Update(tareaExistente);
             await _context.SaveChangesAsync();
             return tareaExistente;
         }
 
-        // Elimina una tarea por su ID.
-        // Retorna true si se eliminó correctamente, o false si no se encontró.
+        // Eliminar una tarea por ID
         public async Task<bool> DeleteAsync(int id)
         {
-            var tarea = await _context.tareas.FindAsync(id);
+            var tarea = await _context.Tareas.FindAsync(id);
             if (tarea == null)
                 return false;
 
-            _context.tareas.Remove(tarea);
+            _context.Tareas.Remove(tarea);
             await _context.SaveChangesAsync();
             return true;
         }

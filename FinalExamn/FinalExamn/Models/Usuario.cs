@@ -1,21 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("usuarios")]
-public class Usuario
+namespace FinalExamn.Models
 {
-    [Key]
-    public int Id { get; set; }
+    [Table("usuarios")]
+    public class Usuario
+    {
+        [Key]
+        [Column("id")]
+        public int Id { get; set; }
 
-    [Required]
-    [Column("nombre")]
-    public string Nombre { get; set; }
+        [Required]
+        [Column("nombre")]
+        public string Nombre { get; set; }
 
-    [Column("email")]
-    public string Email { get; set; }
+        [Required]
+        [Column("email")]
+        public string Email { get; set; }
 
-    [Column("contrasena")]
-    public string Contrasena { get; set; }
-
-
+        [Required]
+        [Column("contrasena")]
+        public string Contrasena { get; set; }
+    }
 }

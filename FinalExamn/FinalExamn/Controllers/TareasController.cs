@@ -1,62 +1,65 @@
-﻿using FinalExamn.Services;
+﻿using FinalExamn.Models;
+using FinalExamn.Services;
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("api/[controller]")]
-public class TareasController : ControllerBase
+namespace FinalExamn.Controllers
 {
-    private readonly TareaService _tareaService;
-
-    public TareasController(TareaService tareaService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TareasController : ControllerBase
     {
-        _tareaService = tareaService;
-    }
+        private readonly TareaService _tareaService;
 
-    // GET: api/tareas
-    [HttpGet]
-    public async Task<IActionResult> GetTareas()
-    {
-        var tareas = await _tareaService.GetAllAsync();
-        return Ok(tareas);
-    }
+        public TareasController(TareaService tareaService)
+        {
+            _tareaService = tareaService;
+        }
 
-    // POST: api/tareas
-    [HttpPost]
-    public async Task<IActionResult> CrearTarea([FromBody] Tarea tarea)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        // GET: api/tareas
+        [HttpGet]
+        public async Task<IActionResult> GetTareas()
+        {
+            var tareas = await _tareaService.GetAllAsync();
+            return Ok(tareas);
+        }
 
-        var creado = await _tareaService.CreateAsync(tarea);
-        return CreatedAtAction(nameof(GetTareas), new { id = creado.Id }, creado);
-    }
+        // POST: api/tareas
+        [HttpPost]
+        public async Task<IActionResult> CrearTarea([FromBody] Tarea tarea)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-    // PUT: api/tareas/{id}
-    [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarTarea(int id, [FromBody] Tarea tarea)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            var creada = await _tareaService.CreateAsync(tarea);
+            return CreatedAtAction(nameof(GetTareas), new { id = creada.Id }, creada);
+        }
 
-        // Validar que el id de la URL coincida con el id de la tarea enviada
-        if (id != tarea.Id)
-            return BadRequest("El ID de la tarea no coincide con el de la URL.");
+        // PUT: api/tareas/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ActualizarTarea(int id, [FromBody] Tarea tarea)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        var tareaActualizada = await _tareaService.UpdateAsync(tarea);
-        if (tareaActualizada == null)
-            return NotFound();
+            if (id != tarea.Id)
+                return BadRequest("El ID de la tarea no coincide con el de la URL.");
 
-        return Ok(tareaActualizada);
-    }
+            var actualizada = await _tareaService.UpdateAsync(tarea);
+            if (actualizada == null)
+                return NotFound();
 
-    // DELETE: api/tareas/{id}
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> EliminarTarea(int id)
-    {
-        var eliminado = await _tareaService.DeleteAsync(id);
-        if (!eliminado)
-            return NotFound();
+            return Ok(actualizada);
+        }
 
-        return NoContent();
+        // DELETE: api/tareas/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> EliminarTarea(int id)
+        {
+            var eliminado = await _tareaService.DeleteAsync(id);
+            if (!eliminado)
+                return NotFound();
+
+            return NoContent();
+        }
     }
 }

@@ -1,15 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("tareas")]
-public class Tarea
+namespace FinalExamn.Models
 {
-    [Key]
-    public int Id { get; set; }
+    [Table("tareas")]
+    public class Tarea
+    {
+        [Key]
+        [Column("id")]
+        public int Id { get; set; }
 
-    [Required]
-    [Column("descripcion")]
-    public string Descripcion { get; set; }
-
-
+        [Required]
+        [Column("descripcion")]
+        public string Descripcion { get; set; }
+    }
 }

@@ -1,14 +1,13 @@
-using FinalExamn;
+using FinalExamn.Data;
 using FinalExamn.Services;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Agregar controladores con vistas (MVC)
 builder.Services.AddControllersWithViews();
 
-// 2. Registrar el DbContext con conexión a Supabase (cadena en appsettings.json)
+// 2. Registrar el DbContext con la cadena de conexión de appsettings.json
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("SupabaseDB")));
 
@@ -16,16 +15,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TareaService>();
 
-// 4. Configurar Swagger para la documentación interactiva de la API
+// 4. Configurar Swagger para documentación
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 5. Configurar el pipeline HTTP
+
 if (app.Environment.IsDevelopment())
 {
-    // En entorno de desarrollo, habilitar Swagger
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -41,7 +39,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
-// 6. Definir la ruta principal de controladores MVC
+// 6. Ruta principal de controladores MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

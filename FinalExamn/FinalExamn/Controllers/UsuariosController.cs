@@ -1,64 +1,65 @@
-﻿using FinalExamn.Services;
+﻿using FinalExamn.Models;
+using FinalExamn.Services;
 using Microsoft.AspNetCore.Mvc;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UsuariosController : ControllerBase
+namespace FinalExamn.Controllers
 {
-    private readonly UsuarioService _usuarioService;
-
-    public UsuariosController(UsuarioService usuarioService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsuariosController : ControllerBase
     {
-        _usuarioService = usuarioService;
-    }
+        private readonly UsuarioService _usuarioService;
 
-    // GET: api/usuarios
-    [HttpGet]
-    public async Task<IActionResult> GetUsuarios()
-    {
-        var usuarios = await _usuarioService.GetAllAsync();
-        return Ok(usuarios);
-    }
+        public UsuariosController(UsuarioService usuarioService)
+        {
+            _usuarioService = usuarioService;
+        }
 
-    // POST: api/usuarios
-    [HttpPost]
-    public async Task<IActionResult> CrearUsuario([FromBody] Usuario usuario)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        // GET: api/usuarios
+        [HttpGet]
+        public async Task<IActionResult> GetUsuarios()
+        {
+            var usuarios = await _usuarioService.GetAllAsync();
+            return Ok(usuarios);
+        }
 
-        var creado = await _usuarioService.CreateAsync(usuario);
-        return CreatedAtAction(nameof(GetUsuarios), new { id = creado.Id }, creado);
-    }
+        // POST: api/usuarios
+        [HttpPost]
+        public async Task<IActionResult> CrearUsuario([FromBody] Usuario usuario)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-    // PUT: api/usuarios/{id}
-    [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] Usuario usuario)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            var creado = await _usuarioService.CreateAsync(usuario);
+            return CreatedAtAction(nameof(GetUsuarios), new { id = creado.Id }, creado);
+        }
 
-        // Verificar que el id de la URL coincide con el id del usuario enviado
-        if (id != usuario.Id)
-            return BadRequest("El ID del usuario no coincide con el de la URL.");
+        // PUT: api/usuarios/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] Usuario usuario)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        var actualizado = await _usuarioService.UpdateAsync(usuario);
+            if (id != usuario.Id)
+                return BadRequest("El ID del usuario no coincide con el de la URL.");
 
-        if (actualizado == null)
-            return NotFound();
+            var actualizado = await _usuarioService.UpdateAsync(usuario);
+            if (actualizado == null)
+                return NotFound();
 
-        return Ok(actualizado);
-    }
+            return Ok(actualizado);
+        }
 
-    // DELETE: api/usuarios/{id}
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> EliminarUsuario(int id)
-    {
-        var eliminado = await _usuarioService.DeleteAsync(id);
+        // DELETE: api/usuarios/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> EliminarUsuario(int id)
+        {
+            var eliminado = await _usuarioService.DeleteAsync(id);
+            if (!eliminado)
+                return NotFound();
 
-        if (!eliminado)
-            return NotFound();
-
-        return NoContent();
+            return NoContent();
+        }
     }
 }

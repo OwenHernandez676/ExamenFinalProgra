@@ -1,7 +1,6 @@
-﻿using FinalExamn.Models; // Asegúrate de tener definido el modelo Usuario
+﻿using FinalExamn.Data;
+using FinalExamn.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FinalExamn.Services
 {
@@ -14,48 +13,44 @@ namespace FinalExamn.Services
             _context = context;
         }
 
-        // Obtiene todos los usuarios
+        // Listar todos los usuarios
         public async Task<IEnumerable<Usuario>> GetAllAsync()
         {
-            return await _context.usuarios.ToListAsync();
+            return await _context.Usuarios.ToListAsync();
         }
 
-        // Crea un nuevo usuario y lo guarda en la base de datos
+        // Crear un nuevo usuario
         public async Task<Usuario> CreateAsync(Usuario usuario)
         {
-            _context.usuarios.Add(usuario);
+            _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
             return usuario;
         }
 
-        // Actualiza un usuario existente
-        // Retorna el usuario actualizado o null si no se encuentra
+        // Actualizar un usuario existente
         public async Task<Usuario?> UpdateAsync(Usuario usuario)
         {
-            var usuarioExistente = await _context.usuarios.FindAsync(usuario.Id);
+            var usuarioExistente = await _context.Usuarios.FindAsync(usuario.Id);
             if (usuarioExistente == null)
                 return null;
 
-            // Actualiza las propiedades deseadas
             usuarioExistente.Nombre = usuario.Nombre;
             usuarioExistente.Email = usuario.Email;
             usuarioExistente.Contrasena = usuario.Contrasena;
-            // Actualiza otras propiedades si es necesario
 
-            _context.usuarios.Update(usuarioExistente);
+            _context.Usuarios.Update(usuarioExistente);
             await _context.SaveChangesAsync();
             return usuarioExistente;
         }
 
-        // Elimina un usuario por su ID
-        // Retorna true si se eliminó correctamente, o false si no se encontró
+        // Eliminar un usuario por ID
         public async Task<bool> DeleteAsync(int id)
         {
-            var usuario = await _context.usuarios.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
                 return false;
 
-            _context.usuarios.Remove(usuario);
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
             return true;
         }
